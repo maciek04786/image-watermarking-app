@@ -6,7 +6,7 @@ import os
 var_dict = {
     "img_path": "",
     "logo_path": "",
-    "font_color": None,
+    "font_color": (255, 255, 255),
 }
 
 
@@ -53,7 +53,14 @@ def add_watermark():
         else:
             add_logo_watermark()
     elif radio_var.get() == "text":
-        add_text_watermark()
+        if not var_dict["img_path"]:
+            messagebox.showwarning(title="Oops", message="Choose image directory.")
+        elif position_input_value.get() == "Position":
+            messagebox.showwarning(title="Oops", message="Choose positioning.")
+        elif not text_input.get():
+            messagebox.showwarning(title="Oops", message="Enter watermark text.")
+        else:
+            add_text_watermark()
 
 
 # Pretty much your standard Pillow watermarking
@@ -136,11 +143,8 @@ window = Tk()
 window.title("Watermarking app")
 window.config(padx=30, pady=30)
 
-canvas = Canvas(width=640, height=480)
-canvas.grid(column=4, row=0, rowspan=6)
-
 # Labels
-img_path_label = Label(window, text="Choose base image directory:")
+img_path_label = Label(window, text="Choose images directory:")
 img_path_label.grid(column=0, row=2, pady=5, padx=5)
 logo_path_label = Label(window, text="Choose logo file:")
 logo_path_label.grid(column=2, row=2, pady=5, padx=5)
@@ -177,7 +181,7 @@ transparency_input.grid(column=3, row=4, padx=5, pady=5)
 size_input = Scale(window, from_=0, to=100, orient="horizontal")
 size_input.set(10)
 size_input.grid(column=3, row=3, pady=5, padx=5)
-text_input = Entry(window, width=36)
+text_input = Entry(window, width=30)
 text_input.grid(column=1, row=5, padx=5, pady=5)
 
 # Buttons
