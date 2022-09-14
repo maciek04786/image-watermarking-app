@@ -32,10 +32,9 @@ def select_color():
     var_dict["font_color"] = color[0]
 
 
-# Making sure all required variables are in place
 def add_watermark():
-
     if radio_var.get() == "logo":
+        # Making sure all required variables are in place
         if not var_dict["img_path"]:
             messagebox.showwarning(title="Oops", message="Choose image directory.")
         elif not var_dict["logo_path"]:
@@ -55,6 +54,7 @@ def add_watermark():
             messagebox.showinfo(title="Message", message="All done!")
 
     elif radio_var.get() == "text":
+        # Making sure all required variables are in place
         if not var_dict["img_path"]:
             messagebox.showwarning(title="Oops", message="Choose image directory.")
         elif position_input_value.get() == "Position":
