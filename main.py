@@ -1,48 +1,40 @@
 from tkinter import *
-from tkinter import filedialog, colorchooser, messagebox
-from PIL import Image, ImageFont, ImageDraw
-import os
+from tkinter import messagebox, colorchooser, filedialog
+from watermark import Watermark
 
 var_dict = {
     "img_path": "",
     "logo_path": "",
-    "font_color": (255, 255, 255),
+    "font_color": None,
 }
 
 
-# Watermarks are placed with a margin of 1/20 of image width/height
-def calculate_position(img, watermark_width, watermark_height, position):
-    watermark_position = None
-    if position == "Top-Left":
-        watermark_position = (
-            int(0.05 * img.width),
-            int(0.05 * img.height)
-        )
-    elif position == "Top-Right":
-        watermark_position = (
-            int(0.95 * img.width - watermark_width),
-            int(0.05 * img.height)
-        )
-    elif position == "Bottom-Left":
-        watermark_position = (
-            int(0.05 * img.width),
-            int(0.95 * img.height - watermark_height)
-        )
-    elif position == "Bottom-Right":
-        watermark_position = (
-            int(0.95 * img.width - watermark_width),
-            int(0.95 * img.height - watermark_height)
-        )
-    elif position == "Center":
-        watermark_position = (
-            int(0.5 * img.width - 0.5 * watermark_width),
-            int(0.5 * img.height - 0.5 * watermark_height)
-        )
-    return watermark_position
+def select_directory():
+    var_dict["img_path"] = filedialog.askdirectory()
+
+
+def select_file():
+    filetypes = (
+        ("PNG files", ".png"),
+        ("JPEG files", ".jpeg"),
+        ("PPM files", ".ppm"),
+        ("GIF files", ".gif"),
+        ("TIFF files", ".tiff"),
+        ("BMP files", ".bmp"),
+        ("All files", "*.*")
+    )
+    var_dict["logo_path"] = filedialog.askopenfilename(filetypes=filetypes)
+
+
+# PyCharm seems to have a problem with this, tried fixing, but no luck, still works though
+def select_color():
+    color = colorchooser.askcolor(color="#ffffff", title="Select a color")
+    var_dict["font_color"] = color[0]
 
 
 # Making sure all required variables are in place
 def add_watermark():
+
     if radio_var.get() == "logo":
         if not var_dict["img_path"]:
             messagebox.showwarning(title="Oops", message="Choose image directory.")
@@ -51,7 +43,17 @@ def add_watermark():
         elif position_input_value.get() == "position":
             messagebox.showwarning(title="Oops", message="Choose positioning.")
         else:
-            add_logo_watermark()
+            watermark = Watermark(
+                img_path=var_dict["img_path"],
+                transparency=transparency_input.get(),
+                size=size_input.get()
+            )
+            watermark.add_logo_watermark(
+                selected_position=position_input_value.get(),
+                logo_path=var_dict["logo_path"]
+            )
+            messagebox.showinfo(title="Message", message="All done!")
+
     elif radio_var.get() == "text":
         if not var_dict["img_path"]:
             messagebox.showwarning(title="Oops", message="Choose image directory.")
@@ -59,84 +61,21 @@ def add_watermark():
             messagebox.showwarning(title="Oops", message="Choose positioning.")
         elif not text_input.get():
             messagebox.showwarning(title="Oops", message="Enter watermark text.")
+        elif not var_dict["font_color"]:
+            messagebox.showwarning(title="Oops", message="Chose font color.")
         else:
-            add_text_watermark()
-
-
-# Pretty much your standard Pillow watermarking
-def add_logo_watermark():
-    img_path = var_dict["img_path"]
-    logo_path = var_dict["logo_path"]
-    transparency = transparency_input.get()
-    transparency_level = round((transparency / 100) * 255)
-    position = position_input_value.get()
-    size = size_input.get()
-    file_list = os.listdir(img_path)
-
-    for file_name in file_list:
-
-        img = Image.open(f"{img_path}\\{file_name}").convert("RGBA")
-        watermark = Image.open(logo_path).convert("RGBA")
-        watermark.putalpha(transparency_level)
-        watermark_final = watermark.resize((round((size / 100) * img.width), round((size / 100) * img.height)))
-        transparent = Image.new(mode="RGBA", size=(img.width, img.height), color=0)
-        transparent.paste(img)
-        watermark_position = calculate_position(
-            img=img,
-            watermark_width=watermark_final.width,
-            watermark_height=watermark_final.height,
-            position=position,
-        )
-        transparent.paste(im=watermark_final, box=watermark_position, mask=watermark_final)
-        save_path = f"watermarked/{file_name.split(sep='.')[0]}.png"
-        transparent.save(save_path)
-    messagebox.showinfo("Message", "All done!")
-
-
-def add_text_watermark():
-    img_path = var_dict["img_path"]
-    transparency = transparency_input.get()
-    transparency_level = round((transparency / 100) * 255)
-    position = position_input_value.get()
-    size = size_input.get()
-    file_list = os.listdir(img_path)
-    text = text_input.get()
-    font_color = var_dict["font_color"]
-
-    for file_name in file_list:
-
-        img = Image.open(f"{img_path}\\{file_name}").convert("RGBA")
-        txt = Image.new("RGBA", img.size, (font_color[0], font_color[1], font_color[2], 0))
-        draw = ImageDraw.Draw(txt)
-        font_size = round(((size / 2) / 100) * img.height)
-        font_object = ImageFont.truetype(f"fonts/{font_family.get()}.ttf", font_size)
-        txt_width, txt_height = draw.textsize(text=text, font=font_object)
-        draw_position = calculate_position(
-            img=img,
-            position=position,
-            watermark_width=txt_width,
-            watermark_height=txt_height,
-        )
-        fill = (font_color[0], font_color[1], font_color[2], transparency_level)
-        draw.text(xy=draw_position, text=text, fill=fill, font=font_object)
-        watermarked = Image.alpha_composite(img, txt)
-        save_path = f"watermarked/{file_name.split(sep='.')[0]}.png"
-        watermarked.save(save_path)
-    messagebox.showinfo("Message", "All done!")
-
-
-def select_directory():
-    var_dict["img_path"] = filedialog.askdirectory()
-
-
-def select_file():
-    var_dict["logo_path"] = filedialog.askopenfilename(filetypes=(("png files", ".jpg"), ("all files", "*.*")))
-
-
-# PyCharm seems to have a problem with this, tried fixing, but no luck, still works though
-def select_color():
-    color = colorchooser.askcolor(color="#ffffff", title="Select a color")
-    var_dict["font_color"] = color[0]
+            watermark = Watermark(
+                img_path=var_dict["img_path"],
+                transparency=transparency_input.get(),
+                size=size_input.get()
+            )
+            watermark.add_text_watermark(
+                font_family=font_family.get(),
+                font_color=var_dict["font_color"],
+                selected_position=position_input_value.get(),
+                text=text_input.get(),
+            )
+            messagebox.showinfo(title="Message", message="All done!")
 
 
 # ---------------------------UI SETUP ------------------------------ #
@@ -172,7 +111,7 @@ position_input.grid(column=1, row=3, pady=5, padx=5)
 font_family = StringVar()
 font_family.set("Arial")
 values = ["Arial", "Eagle Lake", "IBM Plex Mono", "Jacques Francois", "Quando", "Racing Sans One", "Sacramento",
-              "Sail", "Trade Winds", "Verdana", "ZCOOL KuaiLe"]
+          "Sail", "Trade Winds", "Verdana", "ZCOOL KuaiLe"]
 font_input = OptionMenu(window, font_family, *values)
 font_input.config(width=15)
 font_input.grid(column=1, row=4, pady=5, padx=5)
