@@ -26,7 +26,6 @@ def select_logo():
     var_dict["logo_path"] = filedialog.askopenfilename(filetypes=filetypes)
 
 
-# PyCharm seems to have a problem with this, tried fixing, but no luck, still works though
 def select_color():
     color = colorchooser.askcolor(color="#ffffff", title="Select a color")
     var_dict["font_color"] = color[0]
