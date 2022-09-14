@@ -11,7 +11,7 @@ class Watermark:
         self.position = None
         self.size = size
 
-    # Watermarks are placed with a margin of 5% of image width/height
+    # Watermarks are placed with a 5% margin
     def calculate_position(self, img, watermark_width, watermark_height, selected_position):
         watermark_position = None
         if selected_position == "Top-Left":
@@ -21,23 +21,23 @@ class Watermark:
             )
         elif selected_position == "Top-Right":
             watermark_position = (
-                round(0.95 * img.width - watermark_width),
+                round(0.95 * img.width) - watermark_width,
                 round(0.05 * img.height)
             )
         elif selected_position == "Bottom-Left":
             watermark_position = (
                 round(0.05 * img.width),
-                int(0.95 * img.height - watermark_height)
+                round(0.95 * img.height) - watermark_height
             )
         elif selected_position == "Bottom-Right":
             watermark_position = (
-                round(0.95 * img.width - watermark_width),
-                round(0.95 * img.height - watermark_height)
+                round(0.95 * img.width) - watermark_width,
+                round(0.95 * img.height) - watermark_height
             )
         elif selected_position == "Center":
             watermark_position = (
-                round(0.5 * img.width - 0.5 * watermark_width),
-                round(0.5 * img.height - 0.5 * watermark_height)
+                round(0.5 * img.width) - (0.5 * watermark_width),
+                round(0.5 * img.height) - (0.5 * watermark_height)
             )
         self.position = watermark_position
 
