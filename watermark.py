@@ -11,7 +11,7 @@ class Watermark:
         self.position = None
         self.size = size
 
-    # Watermarks are placed with a margin of 1/20 of image width/height
+    # Watermarks are placed with a margin of 5% of image width/height
     def calculate_position(self, img, watermark_width, watermark_height, selected_position):
         watermark_position = None
         if selected_position == "Top-Left":
@@ -41,7 +41,7 @@ class Watermark:
             )
         self.position = watermark_position
 
-    # Pretty much your standard Pillow watermarking
+
     def add_logo_watermark(self, selected_position, logo_path):
 
         img_list = os.listdir(self.img_path)
