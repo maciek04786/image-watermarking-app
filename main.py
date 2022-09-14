@@ -13,7 +13,7 @@ def select_directory():
     var_dict["img_path"] = filedialog.askdirectory()
 
 
-def select_file():
+def select_logo():
     filetypes = (
         ("PNG files", ".png"),
         ("JPEG files", ".jpeg"),
@@ -132,7 +132,7 @@ radio_text = Radiobutton(window, text="Text", variable=radio_var, value="text")
 radio_text.grid(column=0, row=1, pady=5, padx=5)
 img_path_button = Button(text="Select directory", command=select_directory, width=17)
 img_path_button.grid(column=1, row=2, padx=5, pady=5)
-logo_path_button = Button(text="Select file", command=select_file, width=17)
+logo_path_button = Button(text="Select file", command=select_logo, width=17)
 logo_path_button.grid(column=3, row=2, pady=5, padx=5)
 font_color_button = Button(window, text="Select", command=select_color, width=17)
 font_color_button.grid(column=3, row=5, pady=5, padx=5)
