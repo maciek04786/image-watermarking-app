@@ -50,7 +50,7 @@ def add_watermark():
                 selected_position=position_input_value.get(),
                 logo_path=var_dict["logo_path"]
             )
-            messagebox.showinfo(title="Message", message="All done!")
+            messagebox.showinfo(title="Message", message='All done! Check out "watermarked" folder')
 
     elif radio_var.get() == "text":
         # Making sure all required variables are in place
@@ -74,7 +74,7 @@ def add_watermark():
                 selected_position=position_input_value.get(),
                 text=text_input.get(),
             )
-            messagebox.showinfo(title="Message", message="All done!")
+            messagebox.showinfo(title="Message", message='All done! Check out "watermarked" folder')
 
 
 # ---------------------------UI SETUP ------------------------------ #
