@@ -33,6 +33,7 @@ def select_color():
 
 def add_watermark():
     if radio_var.get() == "logo":
+
         # Making sure all required variables are in place
         if not var_dict["img_path"]:
             messagebox.showwarning(title="Oops", message="Choose image directory.")
@@ -53,6 +54,7 @@ def add_watermark():
             messagebox.showinfo(title="Message", message='All done! Check out "watermarked" folder')
 
     elif radio_var.get() == "text":
+
         # Making sure all required variables are in place
         if not var_dict["img_path"]:
             messagebox.showwarning(title="Oops", message="Choose image directory.")
@@ -83,21 +85,21 @@ window.title("Watermarking app")
 window.config(padx=30, pady=30)
 
 # Labels
-img_path_label = Label(window, text="Choose images directory:")
+img_path_label = Label(window, text="Images directory:")
 img_path_label.grid(column=0, row=2, pady=5, padx=5)
-logo_path_label = Label(window, text="Choose logo file:")
+logo_path_label = Label(window, text="Logo file:")
 logo_path_label.grid(column=2, row=2, pady=5, padx=5)
-position_label = Label(window, text="Choose watermark positioning:")
+position_label = Label(window, text="Watermark positioning:")
 position_label.grid(column=0, row=3, padx=5, pady=5)
-size_label = Label(window, text="Select size:")
+size_label = Label(window, text="Size:")
 size_label.grid(column=2, row=3, padx=5, pady=5)
-font_family_label = Label(window, text="Choose font (Text only):")
+font_family_label = Label(window, text="Font (Text only):")
 font_family_label.grid(column=0, row=4, padx=5, pady=5)
 transparency_label = Label(window, text="Transparency level:")
 transparency_label.grid(column=2, row=4, pady=5, padx=5)
-text_label = Label(window, text="Enter watermark text (Text only):")
+text_label = Label(window, text="Watermark text:")
 text_label.grid(column=0, row=5, pady=5, padx=5)
-font_color_label = Label(window, text="Select color (Text only):")
+font_color_label = Label(window, text="Color (Text only):")
 font_color_label.grid(column=2, row=5, pady=5, padx=5)
 
 # Inputs
